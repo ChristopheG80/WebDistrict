@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+{% form_theme form 'foundation_6_layout.html.twig' %}
+{% block title %}Hello ContactController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1>Formulaire de contact</h1>
+{# Hello {{ controller_name }}! ✅
+    This friendly message is coming from:
+    <ul>
+        <li>Your controller at <code><a href="{{ '/home/christopheg/Public/WebDistrict/src/Controller/ContactController.php'|file_link(0) }}">src/Controller/ContactController.php</a></code></li>
+        <li>Your template at <code><a href="{{ '/home/christopheg/Public/WebDistrict/templates/contact/index.html.twig'|file_link(0) }}">templates/contact/index.html.twig</a></code></li>
+    </ul> #}
+</div>
+
+<div class="row text-center">
+
+    {{ form_start(form) }}
+    <div class="my-custom-class-for-errors">
+        {{ form_errors(form) }}
+    </div>
+
+    <div class="row">
+        <div class="col-6 mx-auto mb-2 mt-4 input-group-label">
+            {{ form_label(form.objet) }}
+            {{ form_widget(form.objet, {'attr': {'class': 'btn-light btn-lg'} }) }}
+            {{ form_errors(form.objet) }}
+        </div>
+        <div class="col-6 mx-auto mb-2">
+            {{ form_label(form.email) }}
+            {{ form_widget(form.email, {'attr': {'class': 'btn-light btn-lg'} }) }}
+            {{ form_errors(form.email) }}
+        </div>
+        <div class="col-9 mx-auto mb-2">
+            {{ form_label(form.message) }}
+            {{ form_widget(form.message, {'attr': {'class': 'btn-outline-district'} }) }}
+        </div>
+        <div class="col-9 mx-auto mb-2">
+            {{ form_label(form.save) }}
+            {{ form_widget(form.save, {'attr': {'class': 'btn-outline-district rounded-3'} }) }}
+            
+        </div>
+
+    </div>
+    {{ form_end(form) }}
+</div>
+{% endblock %}

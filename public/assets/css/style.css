@@ -1,0 +1,153 @@
+@font-face {
+  font-family: craie;
+  src: url("../font/Lobster-Regular.ttf");
+}
+@font-face {
+  font-family: pol;
+  src: "Helvetica";
+}
+@font-face {
+  font-family: dislexic;
+  src: "OpenDyslexicAlta-Regular.otf";
+}
+
+body{
+    /* background: url("../../images_the_district/ibg.jpg") repeat top center fixed; */
+    background-color: #FFF;
+    /* min-width: 100%;
+    width:100%; */
+    background-size: 100%;
+    /* font-family: Verdana, Geneva, Tahoma, sans-serif; */
+    font-family: dislexic;
+    /* font-family: craie; */
+    list-style: none;
+  }
+
+body h1, h2, h3, h4,h5, h6, p, a{
+    color: #970747;
+  }
+
+.districtColor{
+    color: #970747;
+    font-weight: bolder;
+    font-size: larger;
+}
+
+.bg-district{
+    background-color: #970747;
+}
+.bg-district-h{
+  min-height: 6em;
+}
+.btn-outline-district, .btn-outline-district:hover{
+    color: #970747;
+    border-color: #970747;
+  
+}
+
+.btn-cat, .btn-cat:hover{
+  background-color: #FFF;
+  
+}
+
+.btn-cat:hover{
+  background-color: #C0C0C0;
+}
+
+p.plat{
+    display:flex;
+    flex-wrap: wrap;
+}
+input.districtColor{
+    caret-color: #970747;
+}
+
+.form-control:focus {
+    color: #970747 !important;
+}
+.form-check-input:focus {
+    border-color: #970747;
+}
+
+.texte-blanc{
+  color:rgba(255, 255, 255, .75);
+}
+
+.texte-blanc:hover{
+  color: #FFF;
+}
+
+.texte-vert{
+  color:rgba(255, 255, 255, .75);
+}
+
+.texte-vert:hover{
+  color: #FFF;
+}
+
+.searchBar{
+  height: 10rem;
+}
+
+#logo_nav{
+  height: 7rem;
+}
+.fontpol{
+  color:black;
+  font-family: pol;
+  font-size: larger;
+  
+}
+.list_com{
+  color:black;
+  text-decoration: underline;
+}
+.bg_com{
+  background-color: rgba(255, 255, 255, .5);
+}
+.bg_footer{
+  background-color: rgba(255, 255, 255, .15);
+}
+.ended_line{
+  background-color: rgba(255, 255, 255, .15);
+}
+.content{
+  min-height: calc(100vh - 70px);
+}
+footer{
+  height: 50px;
+}
+.img_cat{
+  width: 18em;
+}
+.img_card{
+  width: 12rem;
+  height:12rem;
+}
+
+.card_fw{
+  width: 36rem;
+  height: 24rem;
+}
+#bas_page{
+  height: 12rem;
+}
+.img_small{
+  height: 5rem;
+  width: 5rem;
+  border-style:solid;
+  border-color:#970747;
+  border-width: 10 em;
+  border-radius: 15%;
+}
+.img_plat{
+  width: 12rem;
+  height:12rem;
+  border-style:solid;
+  border-color:#970747;
+  border-width: 10 em;
+  border-radius: 15%;
+}
+.bg_fond{
+  background-color: darkgrey;
+} 
