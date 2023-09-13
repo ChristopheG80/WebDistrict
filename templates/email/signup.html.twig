@@ -1,0 +1,30 @@
+
+
+{# <h1>Welcome {{ mailer.toName }}!</h1> #}
+
+<p>
+    {# You signed up as {{ username }} the following email: #}
+</p>
+{# <p><code>{{ mailer.to[0].address }}</code></p> #}
+
+<p>
+    <a href="#">Click here to activate your account</a>
+    {# (this link is valid until {{ expiration_date|date('F jS') }}) #}
+</p>
+
+
+
+
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    {# <h1>Ici ce sont les mails{{ controllerName }}! ✅</h1> #}
+
+    Ici le message pour le destinataire
+    
+</div>
+
+

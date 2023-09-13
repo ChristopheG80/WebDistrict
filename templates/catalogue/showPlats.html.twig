@@ -19,7 +19,11 @@
                 </div>
                 <div class="col-6 text-center my-2 bg_fond districtColor">
                     {{plat.description}}
-                    <p><button class="text-center btn btn-outline-district btn-cat btn-lg my-1" type="submit" name="plat" value="{{ plat.id }}">Commander</button></p>
+                    <p><a href="/panier/ajout/{{plat.id}}" class="text-center my-1" name="plat">
+                    
+                    <img src="{{ asset('assets/images_the_district/panier_logo_ajout.png')}}" class="rounded-3">
+                    
+                    </a></p>
                 </div>
                 <div class="col-2 text-center my-2 bg_fond districtColor justify-content-bottom">
                     {{plat.prix}}&nbsp;&euro;

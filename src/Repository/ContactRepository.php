@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Contact;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\component\Mailer\MailerInterface;
 
 /**
  * @extends ServiceEntityRepository<Contact>
@@ -16,9 +17,11 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class ContactRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $mailer;
+    public function __construct(ManagerRegistry $registry, MailerInterface $mailer)
     {
         parent::__construct($registry, Contact::class);
+        $this->mailer = $mailer;
     }
 
 //    /**

@@ -6,17 +6,20 @@ use App\Repository\CategorieRepository;
 use App\Repository\PlatRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class CatalogueController extends AbstractController
 {
     private $categorieRepo;
     private $platRepo;
+    private $mailer;
 
-    public function __construct(CategorieRepository $categorieRepo, PlatRepository $platRepo)
+    public function __construct(CategorieRepository $categorieRepo, PlatRepository $platRepo, MailerInterface $mailer)
     {
         $this->categorieRepo = $categorieRepo;
         $this->platRepo = $platRepo;
+        $this->mailer = $mailer;
     }
 
     #[Route('/catalogue', name: 'app_catalogue')]
@@ -43,10 +46,16 @@ class CatalogueController extends AbstractController
     }
 
     #[Route('/plats/{categorie_id}', name: 'app_catalogue_CatPlats')]
-    public function showCatPlats(): Response
+    public function showCatPlats($categorie_id): Response
     {
+        
+        $plats = $this->categorieRepo->ShowPlatbyCat($categorie_id);
+        $cats = $this->categorieRepo->ShowOneCat($categorie_id);
+        //dd($plats);
         return $this->render('catalogue/showCatPlats.html.twig', [
             'controller_name' => 'CatalogueController',
+            'plats' => $plats,
+            'cats' => $cats
         ]);
     }
 
@@ -54,7 +63,9 @@ class CatalogueController extends AbstractController
     public function showCats(): Response
     {
         // $categories = $this->categorieRepo->ShowCat6Pop();
-        $categories = $this->categorieRepo->findCatPaginated(1);
+        $page=1;
+        $limit=6;
+        $categories = $this->categorieRepo->findCatPaginated($page, $limit);
         return $this->render('catalogue/showCats.html.twig', [
             'controller_name' => 'CatalogueController',
             'categories' => $categories

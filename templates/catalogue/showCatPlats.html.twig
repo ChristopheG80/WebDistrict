@@ -9,13 +9,31 @@
 </style>
 {# Boucle pour affichage des images et textes #}
 <div class="example-wrapper">
-    <h1>Voir les plats d'une catégorie</h1>
- {# Hello {{ controller_name }}! ✅
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/home/christopheg/Public/WebDistrict/src/Controller/CatalogueController.php'|file_link(0) }}">src/Controller/CatalogueController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/home/christopheg/Public/WebDistrict/templates/catalogue/index.html.twig'|file_link(0) }}">templates/catalogue/index.html.twig</a></code></li>
-    </ul> #}
+    {% for cat in cats %}
+    <h1>La catégorie {{ cat.libelle }}</h1>
+    {% endfor %}
 </div>
-{# fin de boucle #}
+<div class="container">
+         <div class="row mt-5">
+            {% for plat in plats %}
+             {# <div class="col-12 col-lg-6 col-xl-4 mx-auto text-center my-2">   #}
+                 <div class="col-4 text-center my-2 bg_fond">
+                    <img src="{{ asset('assets/images_the_district/food/')}}{{plat.image}}" alt="{{ plat.libelle }}" class="rounded-3 img_plat">
+                </div>
+                <div class="col-6 text-center my-2 bg_fond districtColor">
+                    {{plat.description}}
+                    <p><a href="/panier/ajout/{{plat.id}}" class="text-center my-1" name="plat">
+                    
+                    <img src="{{ asset('assets/images_the_district/panier_logo_ajout.png')}}" class="rounded-3">
+                    
+                    </a></p>
+                </div>
+                
+                <div class="col-2 text-center my-2 bg_fond districtColor justify-content-bottom">
+                    {{plat.prix}}&nbsp;&euro;
+                </div>
+            {# </div>     #}
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}

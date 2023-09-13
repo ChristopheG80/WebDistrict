@@ -11,10 +11,16 @@ use App\Entity\Plat;
 use App\Entity\Utilisateur;
 use Symfony\Component\Clock\Clock;
 use Symfony\Component\Clock\MockClock;
-
+use Symfony\Component\Mailer\MailerInterface;
 
 class JeuData extends Fixture
 {
+    
+    private $mailer;
+    public function __construct(MailerInterface $mailer)
+    {
+        $this->mailer=$mailer;
+    }
     public function load(ObjectManager $manager): void
     {
         Clock::set(new MockClock());

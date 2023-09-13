@@ -5,6 +5,8 @@ namespace App\Repository;
 use App\Entity\MoyenPaiement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\component\Mailer\MailerInterface;
+
 
 /**
  * @extends ServiceEntityRepository<MoyenPaiement>
@@ -16,9 +18,11 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class MoyenPaiementRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $mailer;
+    public function __construct(ManagerRegistry $registry, MailerInterface $mailer)
     {
         parent::__construct($registry, MoyenPaiement::class);
+        $this->mailer = $mailer;
     }
 
     const _WIRE_TRANSFERT = 0;

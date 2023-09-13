@@ -23,13 +23,13 @@
     {{ form_start(form) }}
     <div class="my-custom-class-for-errors">
         {{ form_errors(form) }}
-    </div>
+    
 
-    <div class="row">
-        <div class="col-6 mx-auto mb-2 mt-4 input-group-label">
+    
+        <div class="col-6 mx-auto input-group-label">
             {{ form_label(form.objet) }}
             {{ form_widget(form.objet, {'attr': {'class': 'btn-light btn-lg'} }) }}
-            {{ form_errors(form.objet) }}
+            {{ form_errors(form.objet) }}{{ form_help(form.objet) }}
         </div>
         <div class="col-6 mx-auto mb-2">
             {{ form_label(form.email) }}
@@ -39,13 +39,13 @@
         <div class="col-9 mx-auto mb-2">
             {{ form_label(form.message) }}
             {{ form_widget(form.message, {'attr': {'class': 'btn-outline-district'} }) }}
+            {{ form_errors(form.message) }}
         </div>
         <div class="col-9 mx-auto mb-2">
             {{ form_label(form.save) }}
             {{ form_widget(form.save, {'attr': {'class': 'btn-outline-district rounded-3'} }) }}
-            
         </div>
-
+    
     </div>
     {{ form_end(form) }}
 </div>

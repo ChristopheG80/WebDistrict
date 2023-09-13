@@ -6,6 +6,10 @@ namespace App\Repository;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Categorie;
+use Symfony\component\Mailer\MailerInterface;
+use Doctrine\ORM\EntityManager;
+
+
 
 /**
  * @extends ServiceEntityRepository<Categorie>
@@ -17,14 +21,16 @@ use App\Entity\Categorie;
  */
 class CategorieRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $mailer;
+    public function __construct(ManagerRegistry $registry, MailerInterface $mailer)
     {
         parent::__construct($registry, Categorie::class);
+        $this->mailer = $mailer;
     }
 
     public function findCatPaginated($page = 1, $limit = 6)
     {
-        
+        //, EntityManager $entityManager
         $limit = abs($limit);
         $first = ($page - 1) * $limit;
         $entityManager = $this->getEntityManager();
@@ -35,8 +41,8 @@ class CategorieRepository extends ServiceEntityRepository
             ->setMaxResults($limit)
             ->setFirstResult($first)
             ->getQuery();
-            // dd($query);
-            
+        // dd($query);
+
         return $query->getResult();
     }
 
@@ -63,13 +69,32 @@ class CategorieRepository extends ServiceEntityRepository
         return $query->getResult();
     }
 
-    //    public function findOneBySomeField($value): ?Categorie
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function ShowPlatbyCat(int $cat)
+    {
+        
+        //dd($cat);
+        $entityManager = $this->getEntityManager();
+        $query = $this->createQueryBuilder('c')
+            ->select('c.id, c.libelle, c.image AS titimage, p.libelle, p.id, p.prix, p.description, p.image')
+            ->join('c.plats', 'p')
+            ->where('c.id = :val1')
+            ->setParameter('val1',$cat)
+            
+            ->getQuery();
+        return $query->getResult();
+    }
+
+    public function ShowOneCat(int $cat)
+    {
+        
+        //dd($cat);
+        $entityManager = $this->getEntityManager();
+        $query = $this->createQueryBuilder('c')
+            ->select('c.id, c.libelle, c.image')
+            ->where('c.id = :val1')
+            ->setParameter('val1',$cat)
+            ->getQuery();
+        return $query->getResult();
+    }
+
 }

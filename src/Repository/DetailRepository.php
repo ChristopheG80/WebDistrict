@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Detail;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\component\Mailer\MailerInterface;
 
 /**
  * @extends ServiceEntityRepository<Detail>
@@ -16,9 +17,11 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class DetailRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    private $mailer;
+    public function __construct(ManagerRegistry $registry, MailerInterface $mailer)
     {
         parent::__construct($registry, Detail::class);
+        $this->mailer = $mailer;
     }
 
 //    /**

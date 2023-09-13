@@ -65,13 +65,13 @@
           <a class="nav-link" href="#">Admin</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Panier</a>
+          <a class="nav-link" href="{{ path('app_panier') }}">Panier {% if app.session.get("panier") | length > 0 %}(<span class="text-primary">{{app.session.get("panier") | length}}</span>){% endif %}</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Connexion</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="{{ path('app_email') }}">#[|]}{`</a>
+          <a class="nav-link" href="{{ path('app_email') }}">#####</a>
         </li>
       </ul>
     </div>

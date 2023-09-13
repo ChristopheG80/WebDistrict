@@ -8,6 +8,8 @@ use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
+use Symfony\component\Mailer\MailerInterface;
+
 
 /**
  * @extends ServiceEntityRepository<Utilisateur>
@@ -21,9 +23,11 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
  */
 class UtilisateurRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    private $mailer;
+    public function __construct(ManagerRegistry $registry, MailerInterface $mailer)
     {
         parent::__construct($registry, Utilisateur::class);
+        $this->mailer = $mailer;
     }
 
     /**
