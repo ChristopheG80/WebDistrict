@@ -30,7 +30,7 @@ class MailService extends AbstractController
             ->to($to)
             ->subject($objet)
             ->text($message)
-            ->htmlTemplate('email/signup.html.twig')
+            //->htmlTemplate('email/signup.html.twig')
             ->context([
                 'expiration_date' => new \DateTime('+7 days'),
                 'username' => 'foo',

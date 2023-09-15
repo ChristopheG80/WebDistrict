@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Plat;
+use App\Entity\Detail;
 use App\Repository\PlatRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,14 +25,21 @@ class PanierController extends AbstractController
 
 
     
-    public function index(PlatRepository $repo): Response
+    public function index(PlatRepository $repo, Request $request): Response
     {
 
+        $form = $this->createForm(LivraisonpanierType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+        }
         $plats = $repo->findAll();
 
         return $this->render('panier/index.html.twig', [
             'controller_name' => 'PanierController',
-            'plats' => $plats
+            'plats' => $plats,
+            'form' => $form
         ]);
     }
 
@@ -55,21 +63,45 @@ class PanierController extends AbstractController
         return $this->redirect("$referer");
     }
 
+    #[Route('/panier/del/{plat}', name: 'app_panier')]
+    public function delplat(SessionInterface $session, PlatRepository $repo, Request $request): Response
+    {
+        $referer = $request->headers->get('referer');
+
+        return $this->redirect("$referer");
+    }
+
+    #[Route('/panier/delpanier', name: 'app_delpanier')]
+    public function panierdel(SessionInterface $session, Request $request): Response
+    {
+        $referer = $request->headers->get('referer');
+        $session->set("panier", []);
+        return $this->redirect("$referer");
+    }
+    
     #[Route('/panier', name: 'app_panier')]
     public function panier(SessionInterface $session, PlatRepository $repo): Response
     {
+        
+        $total_panier=0;
         $panier = $session->get("panier", []);
 
         $nouveau_panier = [];
         foreach ($panier as $key => $value) {
             $p = $repo->find($key);
             $nouveau_panier[] = $p;
+            $total_panier+=$p->getPrix()*$value;
         }
-        dump($panier);
-        dump($nouveau_panier);
         return $this->render('panier/panier.html.twig', [
             'panier' => $panier,
             'nouveau_panier' => $nouveau_panier,
+            'total_panier' => $total_panier,
         ]);
     }
+    #[Route('/panierconfirm', name: 'app_panierconfirm')]
+    public function confirmcde(SessionInterface $session, Detail $detail, Request $request)
+    {
+        
+    }
+    
 }

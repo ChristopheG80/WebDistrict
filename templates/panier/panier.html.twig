@@ -25,12 +25,96 @@
     <td>{{ produit.libelle }}</td>
     <td>{{ produit.prix }}</td>
     <td>{{ panier[produit.id] }}</td>
-    <td><img src="{{ asset('assets/images_the_district/panier_logo_rond_plus.png')}}" height="20" alt="plus"></td>
+    {# <a class="nav-link" href="{{ path('app_contact') }}">Contact</a> #}
+    <td>
+        {# <a href="{{ path('app_panier_add') }}"> #}
+            <img src="{{ asset('assets/images_the_district/panier_logo_rond_plus.png')}}" height="20" alt="plus">
+        {# </a> #}
+    </td>
     <td><img src="{{ asset('assets/images_the_district/panier_logo_rond_moins.png')}}" height="20" alt="moins"></td>
-    <td><img src="{{ asset('assets/images_the_district/panier_logo_rond_del.png')}}" height="20" alt="del"></td>
+    <td>
+    {# <a href="{{ path('app_del{plat}') }}"> #}
+    <img src="{{ asset('assets/images_the_district/panier_logo_rond_del.png')}}" height="20" alt="del">
+    {# </a> #}
+    </td>
 </tr>
 
     {% endfor %}
+
+    {% if total_panier > 0 %}
+        <tr><td colspan="7" class="text-center">Total du panier&nbsp;=&nbsp;
+        <span class="fs-3 mx-5">{{ total_panier }}&nbsp;&euro;</span>
+        <a href="{{ path('app_delpanier') }}">Vider mon panier 
+            <img src="{{ asset('assets/images_the_district/panier_logo_rond_del.png')}}" height="40" alt="del">
+    </a>
+    
+    
+    {% else %}
+        <tr><td colspan="7" class="text-center">Panier vide
+    {% endif %}
+    </td></tr>
+
 </tbody>
     </table>
+    <p>Username: {{ app.user.username ?? 'Anonymous user' }}</p>
+    <p>flashes: {{ app.flashes ?? 'No flash' }}</p>
+    
+{% if app.debug %}
+    <p>Request method: {{ app.request.method }}</p>
+    <p>Application Environment: {{ app.environment }}</p>
+    <p>Route: {{ app.current_route }}</p>
+    <p>Token: {{ app.token }}</p>
+{% endif %}
+    {% if total_panier > 0 %}
+        <div class="text-center">
+        <a href="{{ path('app_panierconfirm') }}" class="btn btn-success">Finaliser la commande</a>
+        </div>
+
+        {# <div class="row text-center">
+{{ form_start(form) }}
+<div class="my-custom-class-for-errors">
+        {{ form_errors(form) }}
+    
+<div class="col-6 mx-auto input-group-label">
+            {{ form_label(form.nom) }}
+            {{ form_widget(form.nom, {'attr': {'class': 'btn-light btn-lg'} }) }}
+            {{ form_errors(form.nom) }}{{ form_help(form.objet) }}
+        </div>
+        <div class="col-6 mx-auto mb-2">
+            {{ form_label(form.prenom) }}
+            {{ form_widget(form.prenom, {'attr': {'class': 'btn-light btn-lg'} }) }}
+            {{ form_errors(form.prenom) }}
+        </div>
+        <div class="col-6 mx-auto mb-2">
+            {{ form_label(form.email) }}
+            {{ form_widget(form.email, {'attr': {'class': 'btn-light btn-lg'} }) }}
+            {{ form_errors(form.email) }}
+        </div>
+        <div class="col-9 mx-auto mb-2">
+            {{ form_label(form.telephone) }}
+            {{ form_widget(form.telephone, {'attr': {'class': 'btn-outline-district'} }) }}
+            {{ form_errors(form.telephone) }}
+        </div>
+        <div class="col-9 mx-auto mb-2">
+            {{ form_label(form.adresse) }}
+            {{ form_widget(form.adresse, {'attr': {'class': 'btn-outline-district'} }) }}
+            {{ form_errors(form.adresse) }}
+        </div>
+        <div class="col-9 mx-auto mb-2">
+            {{ form_label(form.cp) }}
+            {{ form_widget(form.cp, {'attr': {'class': 'btn-outline-district'} }) }}
+            {{ form_errors(form.cp) }}
+        </div>
+        <div class="col-9 mx-auto mb-2">
+            {{ form_label(form.ville) }}
+            {{ form_widget(form.ville, {'attr': {'class': 'btn-outline-district'} }) }}
+            {{ form_errors(form.ville) }}
+        </div>
+    </div>
+    {{ form_end(form) }}
+</div> #}
+        
+    {% endif %}
+    
+
 {% endblock %}

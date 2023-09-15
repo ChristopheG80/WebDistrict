@@ -96,7 +96,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
         // Roles possibles dans l'application
-        // $roles[] = 'ROLE_CLIENT';
+        $roles[] = 'ROLE_CLIENT';
         // $roles[] = 'ROLE_ADMIN';
         // $roles[] = 'ROLE_CHEF';
 

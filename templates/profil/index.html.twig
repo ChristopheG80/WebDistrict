@@ -3,24 +3,45 @@
 {% block body %}
     <div class="container">
         <div class="row mt-5">
-        <div class="col-sm-8 offset-sm-2">
-        <h1>Vos informations</h1>
-        <table class="table table-light table-hover">
-            <thead>
-            <tr>
-            <th>Email</th>
-            <th>Ville</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-            <td>{{ informations.email }}</td>
-            <td>{{ informations.ville }}</td>
-            </tr>
-            </tbody>
-        </table>
-        </div>
+            <div class="col-sm-8 offset-sm-2">
+            <h1>Vos informations</h1>
+            <table class="table table-light table-hover">
+                <thead>
+                    <tr>
+                        <th>Email</th>
+                        <th>Adresse</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ informations.email }}</td>
+                        <td>{{ informations.adresse }}</td>
+                    </tr>
+                <thead>
+                <tr>
+                <th>CP</th>
+                <th>Ville</th>
+                </tr>
+                </thead>
+                <tr>            
+                <td>{{ informations.cp }}</td>
+                <td>{{ informations.ville }}</td>
+                </tr>
+                <thead>
+                <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                </tr>
+                </thead>
+                <tr>
+                <td>{{ informations.nom }}</td>
+                <td>{{ informations.prenom }}</td>
+                </tr>
+                </tbody>
+            </table>
+            </div>
+            <div>
+            </div>
         </div>
     </div>
     {% endblock %}
-EF085DA

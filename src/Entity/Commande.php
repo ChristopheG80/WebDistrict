@@ -31,6 +31,18 @@ class Commande
     #[ORM\ManyToOne(inversedBy: 'commandes')]
     private ?Utilisateur $utilisateur = null;
 
+    #[ORM\Column(length: 100)]
+    private ?string $liv_adresse1 = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $liv_adresse2 = null;
+
+    #[ORM\Column(length: 5)]
+    private ?string $liv_cp = null;
+
+    #[ORM\Column(length: 100)]
+    private ?string $liv_ville = null;
+
     const _COMMANDE_ENREGISTREE_PAYEE = 0;
     const _COMMANDE_EN_PREPARATION = 1;
     const _COMMANDE_EN_COURS_DE_LIVRAISON = 2;
@@ -124,6 +136,54 @@ class Commande
     public function setUtilisateur(?Utilisateur $utilisateur): static
     {
         $this->utilisateur = $utilisateur;
+
+        return $this;
+    }
+
+    public function getLivAdresse1(): ?string
+    {
+        return $this->liv_adresse1;
+    }
+
+    public function setLivAdresse1(string $liv_adresse1): static
+    {
+        $this->liv_adresse1 = $liv_adresse1;
+
+        return $this;
+    }
+
+    public function getLivAdresse2(): ?string
+    {
+        return $this->liv_adresse2;
+    }
+
+    public function setLivAdresse2(?string $liv_adresse2): static
+    {
+        $this->liv_adresse2 = $liv_adresse2;
+
+        return $this;
+    }
+
+    public function getLivCp(): ?string
+    {
+        return $this->liv_cp;
+    }
+
+    public function setLivCp(string $liv_cp): static
+    {
+        $this->liv_cp = $liv_cp;
+
+        return $this;
+    }
+
+    public function getLivVille(): ?string
+    {
+        return $this->liv_ville;
+    }
+
+    public function setLivVille(string $liv_ville): static
+    {
+        $this->liv_ville = $liv_ville;
 
         return $this;
     }
