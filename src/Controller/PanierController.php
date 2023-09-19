@@ -4,7 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Plat;
 use App\Entity\Detail;
+use App\Entity\Commande;
+use App\Entity\Contact;
 use App\Repository\PlatRepository;
+use App\Service\MailService;
+//use DateTime;
+use DateTimeImmutable;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -46,28 +52,53 @@ class PanierController extends AbstractController
     #[Route('/panier/ajout/{plat}', name: 'app_panier_add')]
     public function addDetails(SessionInterface $session, Plat $plat, Request $request): Response
     {
-        // dd($plat_id);
         $panier = $session->get("panier", []);
         $referer = $request->headers->get('referer');
-        //dd($plat->getId($plat));
-        //dd($panier[$plat->findOneById($plat)]);
         
         if (isset($panier[$plat->getId()])) {
             $panier[$plat->getId()]++;
         } else {
             $panier[$plat->getId()] = 1;
         }
-//dd($panier);
         $session->set("panier", $panier);
-        //$session->set("panier", []);
         return $this->redirect("$referer");
     }
 
-    #[Route('/panier/del/{plat}', name: 'app_panier')]
-    public function delplat(SessionInterface $session, PlatRepository $repo, Request $request): Response
+    #[Route('/panier/delete/{plat}', name: 'app_panier_delete')]
+    public function delplat(SessionInterface $session, PlatRepository $repo, Request $request, Plat $plat): Response
     {
+        $panier = $session->get("panier");
         $referer = $request->headers->get('referer');
+        $panier2=array();
+        foreach($panier as $key => $value){
+            if($key != $plat->getId()){
+                $panier2 += [$key=>$value];
+            }
+            
+        }
+        $panier = $panier2;
+        $session->set("panier", $panier);
+        return $this->redirect("$referer");
+    }
 
+    #[Route('/panier/retrait/{plat}', name: 'app_panier_retrait')]
+    public function retrait(SessionInterface $session, PlatRepository $repo, Request $request, Plat $plat): Response
+    {
+        $panier = $session->get("panier");
+        $panier2=array();
+        if($panier[$plat->getId()] > 0){
+            $panier[$plat->getId()]--;
+        }
+        else{
+            foreach($panier as $key => $value){
+                if($value>0){
+                    $panier2 += [$key=>$value];
+                }
+            }
+            $panier=$panier2;    
+        }
+        $referer = $request->headers->get('referer');
+        $session->set("panier", $panier);
         return $this->redirect("$referer");
     }
 
@@ -99,9 +130,62 @@ class PanierController extends AbstractController
         ]);
     }
     #[Route('/panierconfirm', name: 'app_panierconfirm')]
-    public function confirmcde(SessionInterface $session, Detail $detail, Request $request)
+    public function confirmcde(
+        SessionInterface $session, 
+        Detail $detail, 
+        Commande $commande, 
+        PlatRepository $repo, 
+        Request $request, 
+        EntityManagerInterface $entityManager,
+        MailService $mailer)
     {
+        // $detail = new Detail();
+        // $commande = new Commande();
+        $total_panier=0;
+        $panier=$session->get("panier", []);
+        $nouveau_panier = [];
+
+        //Ajouter dans Commande
+        $date = Date("Y-m-d h:i:s");
+        $commande->setDateCommande($date);
+        $commande->setLivAdresse('adresse');
+        $commande->setLivCp(60000);
+        $commande->setLivVille('Beauvais');
+        $commande->setLivTelephone('0322334455');
+        $idCommande=$this->$commande->getId();
+
+        // Ajouter des Détail        
+        foreach ($panier as $key => $value) {
+            $p = $repo->find($key);
+            $nouveau_panier[] = $p;
+            $this->$detail->setPlat($key);
+            $this->$detail->setQuantite($value);
+            $this->$detail->setCommande($idCommande);
+            $total_panier+=$p->getPrix()*$value;
+        }
         
+        $this->$commande->setTotal($total_panier);
+        $this->$commande->setEtat(0);
+
+        // Envoyer un mail de confirmation de la commande
+        $form = $this->createForm(ContactFormType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+        $message = new Contact();
+        $data = $form->getData();
+        $message = $data;
+
+        $entityManager->persist($message);
+        $entityManager->flush();
+        $oo = strval($message->getObjet());
+        $ee = strval($message->getEmail());
+        $mm = strval($message->getMessage());
+            //dd($oo,$ee,$mm);
+        $mailer->sendMail($oo, $ee, $mm);
+        }
     }
-    
+
+
+
 }

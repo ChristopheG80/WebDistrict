@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Mailer\MailerInterface;
 
 #[ORM\Entity(repositoryClass: PlatRepository::class)]
 class Plat
@@ -37,9 +38,11 @@ class Plat
     #[ORM\OneToMany(mappedBy: 'plat', targetEntity: Detail::class)]
     private Collection $details;
 
-    public function __construct()
+    private $mailer;
+    public function __construct(MailerInterface $mailer)
     {
         $this->details = new ArrayCollection();
+        $this->mailer = $mailer;
     }
 
     public function getId(): ?int

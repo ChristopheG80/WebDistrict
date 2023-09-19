@@ -6,6 +6,7 @@ use App\Repository\CategorieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\component\Mailer\MailerInterface;
 
 #[ORM\Entity(repositoryClass: CategorieRepository::class)]
 class Categorie
@@ -27,9 +28,12 @@ class Categorie
     #[ORM\OneToMany(mappedBy: 'categorie', targetEntity: Plat::class)]
     private Collection $plats;
 
-    public function __construct()
+    private $mailer;
+
+    public function __construct(MailerInterface $mailer)
     {
         $this->plats = new ArrayCollection();
+        $this->mailer = $mailer;
     }
 
     public function getId(): ?int

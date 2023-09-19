@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\DetailRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Mailer\MailerInterface;
 
 #[ORM\Entity(repositoryClass: DetailRepository::class)]
 class Detail
@@ -22,6 +23,12 @@ class Detail
     #[ORM\ManyToOne(inversedBy: 'details')]
     private ?Plat $plat = null;
 
+    private $mailer;
+
+    public function __construct(MailerInterface $mailer)
+    {
+        $this->mailer = $mailer;
+    }
     public function getId(): ?int
     {
         return $this->id;

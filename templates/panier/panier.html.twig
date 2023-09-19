@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Panier{% endblock %}
+{# {% block title %}Panier{% endblock %} #}
 
 {% block body %}
 
@@ -27,15 +27,18 @@
     <td>{{ panier[produit.id] }}</td>
     {# <a class="nav-link" href="{{ path('app_contact') }}">Contact</a> #}
     <td>
-        {# <a href="{{ path('app_panier_add') }}"> #}
+        <a href="/panier/ajout/{{produit.id}}"> 
             <img src="{{ asset('assets/images_the_district/panier_logo_rond_plus.png')}}" height="20" alt="plus">
-        {# </a> #}
+        </a>
     </td>
-    <td><img src="{{ asset('assets/images_the_district/panier_logo_rond_moins.png')}}" height="20" alt="moins"></td>
     <td>
-    {# <a href="{{ path('app_del{plat}') }}"> #}
-    <img src="{{ asset('assets/images_the_district/panier_logo_rond_del.png')}}" height="20" alt="del">
-    {# </a> #}
+        <a href="/panier/retrait/{{produit.id}}"> 
+            <img src="{{ asset('assets/images_the_district/panier_logo_rond_moins.png')}}" height="20" alt="moins"></td>
+        </a>
+    <td>
+        <a href="/panier/delete/{{produit.id}}">
+            <img src="{{ asset('assets/images_the_district/panier_logo_rond_del.png')}}" height="20" alt="del">
+        </a>
     </td>
 </tr>
 
@@ -57,7 +60,7 @@
 </tbody>
     </table>
     <p>Username: {{ app.user.username ?? 'Anonymous user' }}</p>
-    <p>flashes: {{ app.flashes ?? 'No flash' }}</p>
+    {# <p>flashes: {{ app.flashes ?? 'No flash' }}</p> #}
     
 {% if app.debug %}
     <p>Request method: {{ app.request.method }}</p>
