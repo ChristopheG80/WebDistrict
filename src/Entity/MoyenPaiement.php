@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use App\Repository\MoyenPaiementRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Mailer\MailerInterface;
+
 
 #[ORM\Entity(repositoryClass: MoyenPaiementRepository::class)]
 class MoyenPaiement
@@ -22,9 +22,9 @@ class MoyenPaiement
 
     private $mailer;
 
-    public function __construct(MailerInterface $mailer)
+    public function __construct()
     {
-        $this->mailer = $mailer;
+        
     }
 
     public function getId(): ?int

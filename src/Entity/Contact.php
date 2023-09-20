@@ -5,7 +5,7 @@ namespace App\Entity;
 use App\Repository\ContactRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Mailer\MailerInterface;
+
 
 #[ORM\Entity(repositoryClass: ContactRepository::class)]
 class Contact
@@ -26,9 +26,9 @@ class Contact
 
     private $mailer;
 
-    public function __construct(MailerInterface $mailer)
+    public function __construct()
     {
-        $this->mailer = $mailer;
+    
     }
     public function getId(): ?int
     {

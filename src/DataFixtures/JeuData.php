@@ -12,14 +12,19 @@ use App\Entity\Utilisateur;
 use Symfony\Component\Clock\Clock;
 use Symfony\Component\Clock\MockClock;
 use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 
 class JeuData extends Fixture
 {
     
     private $mailer;
-    public function __construct(MailerInterface $mailer)
+    private $hasher;
+
+    public function __construct(MailerInterface $mailer, UserPasswordHasherInterface $hasher)
     {
         $this->mailer=$mailer;
+        $this->hasher=$hasher;
     }
     public function load(ObjectManager $manager): void
     {
@@ -148,18 +153,20 @@ class JeuData extends Fixture
         $plat10->setActive(true);
 
         $user1 = new Utilisateur();
-        $user1->setPassword('1234');
-        $user1->setEmail('alibaba@gmail.com');
+        $hashedPassword = $this->hasher->hashPassword($user1, "1234" );
+        $user1->setPassword($hashedPassword);
+        $user1->setEmail('admin@admin.com');
         $user1->setNom('Baba');
         $user1->setPrenom('Ali');
         $user1->setAdresse('12 grande rue');
         $user1->setCp('80000');
         $user1->setVille('Amiens');
         $user1->setTelephone('0322446677');
-        $user1->setRoles(['ROLE_CLIENT']);
+        $user1->setRoles(['ROLE_ADMIN']);
 
         $user2 = new Utilisateur();
-        $user2->setPassword('456789');
+        $hashedPassword = $this->hasher->hashPassword($user2, "1234" );
+        $user2->setPassword($hashedPassword);
         $user2->setEmail('johndoe@gmail.com');
         $user2->setNom('Doe');
         $user2->setPrenom('John');
@@ -169,65 +176,65 @@ class JeuData extends Fixture
         $user2->setTelephone('0322445577');
         $user2->setRoles(['ROLE_CLIENT']);
 
-        $cmd1 = new Commande();
-        $cmd1->setDateCommande($now);
-        $det1 = new Detail();
-        $det1->setCommande($cmd1);
-        $det1->setPlat($plat4);
-        $det1->setQuantite(2);
-        $tot1 = $plat4->getPrix() * $det1->getQuantite();
-        $det2 = new Detail();
-        $det2->setCommande($cmd1);
-        $det2->setPlat($plat3);
-        $det2->setQuantite(3);
-        $tot1 += $plat3->getPrix() * $det2->getQuantite();
-        $cmd1->setTotal($tot1);
-        $cmd1->setEtat(0);
-        $cmd1->setUtilisateur($user2);
+        // $cmd1 = new Commande();
+        // $cmd1->setDateCommande($now);
+        // $det1 = new Detail();
+        // $det1->setCommande($cmd1);
+        // $det1->setPlat($plat4);
+        // $det1->setQuantite(2);
+        // $tot1 = $plat4->getPrix() * $det1->getQuantite();
+        // $det2 = new Detail();
+        // $det2->setCommande($cmd1);
+        // $det2->setPlat($plat3);
+        // $det2->setQuantite(3);
+        // $tot1 += $plat3->getPrix() * $det2->getQuantite();
+        // $cmd1->setTotal($tot1);
+        // $cmd1->setEtat(0);
+        // $cmd1->setUtilisateur($user2);
         
 
-        $cmd2 = new Commande();
-        $cmd2->setDateCommande($now);
-        $det3 = new Detail();
-        $det3->setCommande($cmd2);
-        $det3->setPlat($plat7);
-        $det3->setQuantite(1);
-        $tot2 = $plat7->getPrix() * $det3->getQuantite();
-        $det4 = new Detail();
-        $det4->setCommande($cmd2);
-        $det4->setPlat($plat2);
-        $det4->setQuantite(3);
-        $tot2 += $plat2->getPrix() * $det4->getQuantite();
-        $cmd2->setTotal($tot2);
-        $det6 = new Detail();
-        $det6->setCommande($cmd2);
-        $det6->setPlat($plat8);
-        $det6->setQuantite(3);
-        $tot2 += $plat2->getPrix() * $det6->getQuantite();
-        $det7 = new Detail();
-        $det7->setCommande($cmd2);
-        $det7->setPlat($plat9);
-        $det7->setQuantite(3);
-        $tot2 += $plat2->getPrix() * $det7->getQuantite();
-        $det8 = new Detail();
-        $det8->setCommande($cmd2);
-        $det8->setPlat($plat10);
-        $det8->setQuantite(3);
-        $tot2 += $plat2->getPrix() * $det8->getQuantite();
-        $cmd2->setEtat(0);
-        $cmd2->setUtilisateur($user1);
+        // $cmd2 = new Commande();
+        // $cmd2->setDateCommande($now);
+        // $det3 = new Detail();
+        // $det3->setCommande($cmd2);
+        // $det3->setPlat($plat7);
+        // $det3->setQuantite(1);
+        // $tot2 = $plat7->getPrix() * $det3->getQuantite();
+        // $det4 = new Detail();
+        // $det4->setCommande($cmd2);
+        // $det4->setPlat($plat2);
+        // $det4->setQuantite(3);
+        // $tot2 += $plat2->getPrix() * $det4->getQuantite();
+        // $cmd2->setTotal($tot2);
+        // $det6 = new Detail();
+        // $det6->setCommande($cmd2);
+        // $det6->setPlat($plat8);
+        // $det6->setQuantite(3);
+        // $tot2 += $plat2->getPrix() * $det6->getQuantite();
+        // $det7 = new Detail();
+        // $det7->setCommande($cmd2);
+        // $det7->setPlat($plat9);
+        // $det7->setQuantite(3);
+        // $tot2 += $plat2->getPrix() * $det7->getQuantite();
+        // $det8 = new Detail();
+        // $det8->setCommande($cmd2);
+        // $det8->setPlat($plat10);
+        // $det8->setQuantite(3);
+        // $tot2 += $plat2->getPrix() * $det8->getQuantite();
+        // $cmd2->setEtat(0);
+        // $cmd2->setUtilisateur($user1);
 
 
-        $cmd3 = new Commande();
-        $cmd3->setDateCommande($now);
-        $det5 = new Detail();
-        $det5->setCommande($cmd3);
-        $det5->setPlat($plat6);
-        $det5->setQuantite(2);
-        $tot3 = $plat6->getPrix() * $det5->getQuantite();
-        $cmd3->setTotal($tot3);
-        $cmd3->setEtat(0);
-        $cmd3->setUtilisateur($user1);
+        // $cmd3 = new Commande();
+        // $cmd3->setDateCommande($now);
+        // $det5 = new Detail();
+        // $det5->setCommande($cmd3);
+        // $det5->setPlat($plat6);
+        // $det5->setQuantite(2);
+        // $tot3 = $plat6->getPrix() * $det5->getQuantite();
+        // $cmd3->setTotal($tot3);
+        // $cmd3->setEtat(0);
+        // $cmd3->setUtilisateur($user1);
 
         $manager->persist($cat1);
         $manager->persist($cat2);
@@ -249,21 +256,21 @@ class JeuData extends Fixture
         $manager->persist($plat9);
         $manager->persist($plat10);
 
-        $manager->persist($cmd1);
-        $manager->persist($cmd2);
-        $manager->persist($cmd3);
+        // $manager->persist($cmd1);
+        // $manager->persist($cmd2);
+        // $manager->persist($cmd3);
         
         $manager->persist($user1);
         $manager->persist($user2);
         
-        $manager->persist($det1);
-        $manager->persist($det2);
-        $manager->persist($det3);
-        $manager->persist($det4);
-        $manager->persist($det5);
-        $manager->persist($det6);
-        $manager->persist($det7);
-        $manager->persist($det8);
+        // $manager->persist($det1);
+        // $manager->persist($det2);
+        // $manager->persist($det3);
+        // $manager->persist($det4);
+        // $manager->persist($det5);
+        // $manager->persist($det6);
+        // $manager->persist($det7);
+        // $manager->persist($det8);
 
         $manager->flush();
     }

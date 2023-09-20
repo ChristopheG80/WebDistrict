@@ -5,11 +5,14 @@ namespace App\Controller;
 use App\Entity\Plat;
 use App\Entity\Detail;
 use App\Entity\Commande;
+use App\Entity\Utilisateur;
 use App\Entity\Contact;
+use App\Form\LivraisonpanierType;
 use App\Repository\PlatRepository;
 use App\Service\MailService;
 //use DateTime;
 use DateTimeImmutable;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -129,11 +132,56 @@ class PanierController extends AbstractController
             'total_panier' => $total_panier,
         ]);
     }
+
+
+
+
+
+    #[Route('/panierlivraison', name: 'app_panierlivraison')]
+    public function confirmlivraison(Request $request, EntityManagerInterface $entityManager, MailService $mailer)
+    {
+
+        $form = $this->createForm(LivraisonpanierType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $message = new Contact();
+            $data = $form->getData();
+            $message = $data;
+
+            $entityManager->persist($message);
+            $entityManager->flush();
+
+            //dd($message->getObjet(),$message->getEmail(),$message->getMessage());
+            $oo = strval($message->getObjet());
+            $ee = strval($message->getEmail());
+            $mm = strval($message->getMessage());
+            //dd($oo,$ee,$mm);
+            $mailer->sendMail($oo, $ee, $mm);
+
+            return $this->redirectToRoute('app_catalogue');
+        }
+        return $this->render('panier/delivery.html.twig', [
+            'controller_name' => 'ContactController',
+            'form' => $form,
+            // 'panier' => $panier,
+            // 'nouveau_panier' => $nouveau_panier,
+            // 'total_panier' => $total_panier,
+        ]);
+    }
+    
+ 
+   
+
+
+
+
+
+
+
     #[Route('/panierconfirm', name: 'app_panierconfirm')]
     public function confirmcde(
         SessionInterface $session, 
-        Detail $detail, 
-        Commande $commande, 
         PlatRepository $repo, 
         Request $request, 
         EntityManagerInterface $entityManager,
@@ -146,44 +194,82 @@ class PanierController extends AbstractController
         $nouveau_panier = [];
 
         //Ajouter dans Commande
-        $date = Date("Y-m-d h:i:s");
+        $commande = new Commande();
+        $date = date_create_immutable();
         $commande->setDateCommande($date);
         $commande->setLivAdresse('adresse');
-        $commande->setLivCp(60000);
-        $commande->setLivVille('Beauvais');
+        $commande->setLivCp(80000);
+        $commande->setLivVille('Amiens');
         $commande->setLivTelephone('0322334455');
-        $idCommande=$this->$commande->getId();
+        $commande->setTotal(0);
+        $commande->setEtat(0);
+        $entityManager->persist($commande);
 
-        // Ajouter des Détail        
-        foreach ($panier as $key => $value) {
-            $p = $repo->find($key);
-            $nouveau_panier[] = $p;
-            $this->$detail->setPlat($key);
-            $this->$detail->setQuantite($value);
-            $this->$detail->setCommande($idCommande);
-            $total_panier+=$p->getPrix()*$value;
-        }
+        //dd($commande);
         
-        $this->$commande->setTotal($total_panier);
-        $this->$commande->setEtat(0);
+        
+        // $entityManager->persist($commande);
+        //dd($commande);
+        
+        
+        // $entityManager->flush();
+        
+        //$idCommande = $commande->getId();
+        //dd($idCommande);
+        
+        // Ajouter des lignes pour Détail
+        foreach ($panier as $key => $value) {
+            
+            $detail = new Detail();
+            
+            $p = $repo->find($key);
+            //dd($p);
+            $nouveau_panier[] = $p;
+            // dump($key, $value, $idCommande, $p);
+            // dd('fin');
+            
+            $detail->setPlat($p);
+            $detail->setCommande($commande);
+            
+            $detail->setQuantite($value);
+            
+            $total_panier += $p->getPrix() * $value;
 
+            $entityManager->persist($detail);
+            
+        }
+
+        $commande->setTotal($total_panier);
+        
+        $entityManager->flush();
+        
+        
+        // dd($total_panier);
+        // dd($key, $value, $detail);
+        
+//dd($commande);
         // Envoyer un mail de confirmation de la commande
-        $form = $this->createForm(ContactFormType::class);
+        $form = $this->createForm(LivraisonpanierType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-        $message = new Contact();
-        $data = $form->getData();
-        $message = $data;
+            $message = new Contact();
+            $data = $form->getData();
+            $message = $data;
 
-        $entityManager->persist($message);
-        $entityManager->flush();
-        $oo = strval($message->getObjet());
-        $ee = strval($message->getEmail());
-        $mm = strval($message->getMessage());
-            //dd($oo,$ee,$mm);
-        $mailer->sendMail($oo, $ee, $mm);
+            $entityManager->persist($message);
+            
+            $entityManager->flush();
+
+            $oo = strval($message->getObjet());
+            $ee = strval($message->getEmail());
+            $mm = strval($message->getMessage());
+                //dd($oo,$ee,$mm);
+            $mailer->sendMail($oo, $ee, $mm);
         }
+
+        $entityManager->flush();
+
     }
 
 

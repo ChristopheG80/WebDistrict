@@ -30,10 +30,9 @@ class Categorie
 
     private $mailer;
 
-    public function __construct(MailerInterface $mailer)
+    public function __construct()
     {
         $this->plats = new ArrayCollection();
-        $this->mailer = $mailer;
     }
 
     public function getId(): ?int

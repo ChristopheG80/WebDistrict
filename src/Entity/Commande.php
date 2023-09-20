@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Mailer\MailerInterface;
+
 
 
 #[ORM\Entity(repositoryClass: CommandeRepository::class)]
@@ -28,7 +28,7 @@ class Commande
     private ?int $etat = null;
 
     #[ORM\OneToMany(mappedBy: 'commande', targetEntity: Detail::class)]
-    private Collection $plat;
+    private Collection $details;
 
     #[ORM\ManyToOne(inversedBy: 'commandes')]
     private ?Utilisateur $utilisateur = null;
@@ -51,10 +51,9 @@ class Commande
     const _COMMANDE_LIVREE = 3;
 
     private $mailer;
-    public function __construct(MailerInterface $mailer)
+    public function __construct()
     {
-        $this->plat = new ArrayCollection();
-        $this->mailer = $mailer;
+        $this->details = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -106,27 +105,27 @@ class Commande
     /**
      * @return Collection<int, Detail>
      */
-    public function getPlat(): Collection
+    public function getDetails(): Collection
     {
-        return $this->plat;
+        return $this->details;
     }
 
-    public function addPlat(Detail $plat): static
+    public function addDetail(Detail $detail): static
     {
-        if (!$this->plat->contains($plat)) {
-            $this->plat->add($plat);
-            $plat->setCommande($this);
+        if (!$this->details->contains($detail)) {
+            $this->details->add($detail);
+            $detail->setCommande($this);
         }
 
         return $this;
     }
 
-    public function removePlat(Detail $plat): static
+    public function removeDetail(Detail $detail): static
     {
-        if ($this->plat->removeElement($plat)) {
+        if ($this->details->removeElement($detail)) {
             // set the owning side to null (unless already changed)
-            if ($plat->getCommande() === $this) {
-                $plat->setCommande(null);
+            if ($detail->getCommande() === $this) {
+                $detail->setCommande(null);
             }
         }
 
