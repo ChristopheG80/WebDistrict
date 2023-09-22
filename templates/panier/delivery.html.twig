@@ -1,46 +1,107 @@
-{% if total_panier > 0 %}
-<div class="row text-center">
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container-fluid">
+<div class="row">
 {{ form_start(form) }}
-<div class="my-custom-class-for-errors">
+    <div class="my-custom-class-for-errors col-12">
         {{ form_errors(form) }}
-    
-<div class="col-6 mx-auto input-group-label">
-            {{ form_label(form.nom) }}
-            {{ form_widget(form.nom, {'attr': {'class': 'btn-light btn-lg'} }) }}
-            {{ form_errors(form.nom) }}{{ form_help(form.objet) }}
-        </div>
-        <div class="col-6 mx-auto mb-2">
-            {{ form_label(form.prenom) }}
-            {{ form_widget(form.prenom, {'attr': {'class': 'btn-light btn-lg'} }) }}
-            {{ form_errors(form.prenom) }}
-        </div>
-        <div class="col-6 mx-auto mb-2">
-            {{ form_label(form.email) }}
-            {{ form_widget(form.email, {'attr': {'class': 'btn-light btn-lg'} }) }}
-            {{ form_errors(form.email) }}
-        </div>
-        <div class="col-9 mx-auto mb-2">
-            {{ form_label(form.telephone) }}
-            {{ form_widget(form.telephone, {'attr': {'class': 'btn-outline-district'} }) }}
-            {{ form_errors(form.telephone) }}
-        </div>
-        <div class="col-9 mx-auto mb-2">
-            {{ form_label(form.adresse) }}
-            {{ form_widget(form.adresse, {'attr': {'class': 'btn-outline-district'} }) }}
-            {{ form_errors(form.adresse) }}
-        </div>
-        <div class="col-9 mx-auto mb-2">
-            {{ form_label(form.cp) }}
-            {{ form_widget(form.cp, {'attr': {'class': 'btn-outline-district'} }) }}
-            {{ form_errors(form.cp) }}
-        </div>
-        <div class="col-9 mx-auto mb-2">
-            {{ form_label(form.ville) }}
-            {{ form_widget(form.ville, {'attr': {'class': 'btn-outline-district'} }) }}
-            {{ form_errors(form.ville) }}
-        </div>
     </div>
+        
+                <div class="col-3 input-group-label d-flex">
+                    {{ form_label(form.nom) }}
+                    </div>
+                    <div class="col-3 mb-2">
+                    {{ form_widget(form.nom, {'attr': {'class': 'btn-outline-district'} }) }}
+                    {{ form_errors(form.nom, {'attr': {'class': 'text-warning'} }) }}
+                </div>
+
+
+                <div class="col-3 mb-2">
+                    {{ form_label(form.prenom) }}
+                    {{ form_widget(form.prenom, {'attr': {'class': 'btn-outline-district'} }) }}
+                    {{ form_errors(form.prenom, {'attr': {'class': 'text-warning'} }) }}
+                </div>
+                <div class="col-3 mb-2">
+                    {{ form_label(form.email) }}
+                    </div>
+                    <div class="col-3 mb-2">
+                    {{ form_widget(form.email, {'attr': {'class': 'btn-outline-district'} }) }}
+                    {{ form_errors(form.email, {'attr': {'class': 'text-warning'} }) }}
+                </div>
+                <div class="col-3 mb-2">
+                    {{ form_label(form.telephone) }}
+                    </div>
+                    <div class="col-3 mb-2">
+                    {{ form_widget(form.telephone, {'attr': {'class': 'btn-outline-district'} }) }}
+                    {{ form_errors(form.telephone, {'attr': {'class': 'text-warning'} }) }}
+                </div>
+        
+
+                <div class="col-3 mb-2 flex-row">
+                    {{ form_label(form.adresse) }}
+                    </div>
+                    <div class="col-3 mb-2">
+                    {{ form_widget(form.adresse, {'attr': {'class': 'btn-outline-district'} }) }}
+                    {{ form_errors(form.adresse, {'attr': {'class': 'text-warning'} }) }}
+                </div>
+                <div class="col-3 mb-2">
+                    {{ form_label(form.adresseLiv) }}
+                    </div>
+                    <div class="col-3 mb-2">
+                    {{ form_widget(form.adresseLiv, {'attr': {'class': 'btn-outline-district'} }) }}
+                    {{ form_errors(form.adresseLiv, {'attr': {'class': 'text-warning'} }) }}
+                </div>
+
+                <div class="col-3 mb-2">
+                    {{ form_label(form.cp) }}
+                    </div>
+                    <div class="col-3 mb-2">
+                    {{ form_widget(form.cp, {'attr': {'class': 'btn-outline-district', 'value': '46000'} }) }}
+                    {{ form_errors(form.cp, {'attr': {'class': 'text-warning'} }) }}
+                </div>
+                 <div class="col-3 mb-2">
+                    {{ form_label(form.cpLiv) }}
+                    </div>
+                    <div class="col-3 mb-2">
+                    {{ form_widget(form.cpLiv, {'attr': {'class': 'btn-outline-district'} }) }}
+                    {{ form_errors(form.cpLiv, {'attr': {'class': 'text-warning'} }) }}
+                </div>
+                <div class="col-3 mb-2">
+                    {{ form_label(form.ville) }}
+                    </div>
+                    <div class="col-3 mb-2">
+                    {{ form_widget(form.ville, {'attr': {'class': 'btn-outline-district'} }) }}
+                    {{ form_errors(form.ville, {'attr': {'class': 'text-warning'} }) }}
+                </div>
+            
+                
+               
+                <div class="col-3 mb-2">
+                    {{ form_label(form.villeLiv) }}
+                    </div>
+                    <div class="col-3 mb-2">
+                    {{ form_widget(form.villeLiv, {'attr': {'class': 'btn-outline-district'} }) }}
+                    {{ form_errors(form.villeLiv, {'attr': {'class': 'text-warning'} }) }}
+                </div>
+        
+        
+        
+        
+    </div>
+    <div class="col-3 mb-2 --bs-primary-text-emphasis">
+                    {{ form_label(form.moyenPaiement) }}
+                    {{ form_widget(form.moyenPaiement, {'attr': {'class': 'btn-outline-district'} }) }}
+                    {{ form_errors(form.moyenPaiement, {'attr': {'class': 'text-warning'} }) }}
+                </div>
+                <div class="col-3 mb-2 --bs-primary-text-emphasis">
+                    {{ form_label(form.save) }}
+                    {{ form_widget(form.save, {'attr': {'class': 'btn-outline-district'} }) }}
+                    
+                </div>
     {{ form_end(form) }}
 </div>
+</div>
 
-{% endif %}
+
+{% endblock %}

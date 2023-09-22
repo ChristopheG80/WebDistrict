@@ -45,6 +45,15 @@ class Commande
     #[ORM\Column(length: 100)]
     private ?string $liv_telephone = null;
 
+    #[ORM\Column(length: 100)]
+    private ?string $fact_adresse = null;
+
+    #[ORM\Column(length: 5)]
+    private ?string $fact_cp = null;
+
+    #[ORM\Column(length: 100)]
+    private ?string $fact_ville = null;
+
     const _COMMANDE_ENREGISTREE_PAYEE = 0;
     const _COMMANDE_EN_PREPARATION = 1;
     const _COMMANDE_EN_COURS_DE_LIVRAISON = 2;
@@ -189,6 +198,45 @@ class Commande
     public function setLivTelephone(string $livTelephone): static
     {
         $this->liv_telephone = $livTelephone;
+
+        return $this;
+    }
+
+
+
+    public function getfactAdresse(): ?string
+    {
+        return $this->fact_adresse;
+    }
+
+    public function setfactAdresse(string $fact_adresse): static
+    {
+        $this->fact_adresse = $fact_adresse;
+
+        return $this;
+    }
+
+    
+    public function getfactCp(): ?string
+    {
+        return $this->fact_cp;
+    }
+
+    public function setfactCp(string $fact_cp): static
+    {
+        $this->fact_cp = $fact_cp;
+
+        return $this;
+    }
+
+    public function getfactVille(): ?string
+    {
+        return $this->fact_ville;
+    }
+
+    public function setfactVille(string $fact_ville): static
+    {
+        $this->fact_ville = $fact_ville;
 
         return $this;
     }

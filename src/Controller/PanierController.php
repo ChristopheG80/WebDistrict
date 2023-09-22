@@ -145,11 +145,15 @@ class PanierController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $commande = new Commande();
             $message = new Contact();
+
             $data = $form->getData();
+            dd($data);
             $message = $data;
 
             $entityManager->persist($message);
+            $entityManager->persist($commande);
             $entityManager->flush();
 
             //dd($message->getObjet(),$message->getEmail(),$message->getMessage());
@@ -159,7 +163,7 @@ class PanierController extends AbstractController
             //dd($oo,$ee,$mm);
             $mailer->sendMail($oo, $ee, $mm);
 
-            return $this->redirectToRoute('app_catalogue');
+            return $this->redirectToRoute('app_panier');
         }
         return $this->render('panier/delivery.html.twig', [
             'controller_name' => 'ContactController',
