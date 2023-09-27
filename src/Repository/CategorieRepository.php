@@ -28,7 +28,7 @@ class CategorieRepository extends ServiceEntityRepository
         $this->mailer = $mailer;
     }
 
-    public function findCatPaginated($page = 1, $limit = 6)
+    public function findCatPaginated($page = 1, $limit = 3)
     {
         //, EntityManager $entityManager
         $limit = abs($limit);
@@ -86,14 +86,42 @@ class CategorieRepository extends ServiceEntityRepository
 
     public function ShowOneCat(int $cat)
     {
-        
         //dd($cat);
         $entityManager = $this->getEntityManager();
         $query = $this->createQueryBuilder('c')
             ->select('c.id, c.libelle, c.image')
             ->where('c.id = :val1')
+            ->andWhere('c.active = :val')
+            ->setParameter('val', 1)
             ->setParameter('val1',$cat)
             ->getQuery();
+        return $query->getResult();
+    }
+    
+    public function ShowCatRec(string $Rec)
+    {
+        //dd($cat);
+        //$entityManager = $this->getEntityManager();
+        $query = $this->createQueryBuilder('c')
+            ->select('c.id, c.libelle, c.image')
+            ->where('c.libelle LIKE :val1')
+            ->setParameter('val1','%' . $Rec .'%')
+            ->andWhere('c.active = :val')
+            ->setParameter('val', 1)
+            ->getQuery();
+            //dd($query);
+        return $query->getResult();
+    }
+    public function countAllCat()
+    {
+        //dd($cat);
+        //$entityManager = $this->getEntityManager();
+        $query = $this->createQueryBuilder('c')
+            ->select('COUNT(c.id)')
+            ->where('c.active = :val')
+            ->setParameter('val', 1)
+            ->getQuery();
+            //dd($query);
         return $query->getResult();
     }
 

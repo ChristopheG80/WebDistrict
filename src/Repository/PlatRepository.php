@@ -61,4 +61,19 @@ class PlatRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function ShowPlatsRec($Rec): array
+    {
+        return $this->createQueryBuilder('p')
+        ->select('p.id, p.libelle, p.image, p.description, p.prix')
+        ->where('p.libelle LIKE :val')
+            ->setParameter('val', '%' . $Rec .'%')
+        ->orWhere('p.description LIKE :val2')
+            ->setParameter('val2', '%' . $Rec .'%')
+        ->andWhere('p.active = :val')
+            ->setParameter('val', 1)
+        ->orderBy('p.id', 'ASC')
+        ->getQuery()
+        ->getResult();
+    }
 }

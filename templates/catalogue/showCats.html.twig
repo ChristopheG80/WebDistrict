@@ -26,13 +26,18 @@
             {% for categorie in categories %}
                 <div class="col-12 col-lg-6 col-xl-4 mx-auto text-center my-2">
                     <div class="col-12 text-center">
+                        <a type="submit" name="catego" href="/plats/{{ categorie.id }}">
                         <img src="{{ asset('assets/images_the_district/category/')}}{{categorie.image}}" alt="{{ categorie.libelle }}" class="rounded-3 img_cat">
+                        </a>
                     </div>
                     <div class="col-12">
 
                         <a class="btn btn-outline-district btn-cat btn-lg my-1" type="submit" name="catego" href="/plats/{{ categorie.id }}">{{ categorie.libelle }}</a>
                     </div>
                 </div>
+            {% endfor %}
+            {% for i in 1..pages %}
+                <a class="btn btn-outline-district btn-cat my-1" type="submit" name="categopage" href="/categories/{{ i }}">{{ i }}</a>
             {% endfor %}
             
         </div>

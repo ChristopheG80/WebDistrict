@@ -20,6 +20,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class PanierController extends AbstractController
 {
@@ -33,7 +34,7 @@ class PanierController extends AbstractController
     }
 
 
-    
+
     public function index(PlatRepository $repo, Request $request): Response
     {
 
@@ -41,7 +42,6 @@ class PanierController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
         }
         $plats = $repo->findAll();
 
@@ -57,7 +57,7 @@ class PanierController extends AbstractController
     {
         $panier = $session->get("panier", []);
         $referer = $request->headers->get('referer');
-        
+
         if (isset($panier[$plat->getId()])) {
             $panier[$plat->getId()]++;
         } else {
@@ -72,12 +72,11 @@ class PanierController extends AbstractController
     {
         $panier = $session->get("panier");
         $referer = $request->headers->get('referer');
-        $panier2=array();
-        foreach($panier as $key => $value){
-            if($key != $plat->getId()){
-                $panier2 += [$key=>$value];
+        $panier2 = array();
+        foreach ($panier as $key => $value) {
+            if ($key != $plat->getId()) {
+                $panier2 += [$key => $value];
             }
-            
         }
         $panier = $panier2;
         $session->set("panier", $panier);
@@ -88,17 +87,16 @@ class PanierController extends AbstractController
     public function retrait(SessionInterface $session, PlatRepository $repo, Request $request, Plat $plat): Response
     {
         $panier = $session->get("panier");
-        $panier2=array();
-        if($panier[$plat->getId()] > 0){
+        $panier2 = array();
+        if ($panier[$plat->getId()] > 0) {
             $panier[$plat->getId()]--;
-        }
-        else{
-            foreach($panier as $key => $value){
-                if($value>0){
-                    $panier2 += [$key=>$value];
+        } else {
+            foreach ($panier as $key => $value) {
+                if ($value > 0) {
+                    $panier2 += [$key => $value];
                 }
             }
-            $panier=$panier2;    
+            $panier = $panier2;
         }
         $referer = $request->headers->get('referer');
         $session->set("panier", $panier);
@@ -112,19 +110,19 @@ class PanierController extends AbstractController
         $session->set("panier", []);
         return $this->redirect("$referer");
     }
-    
+
     #[Route('/panier', name: 'app_panier')]
     public function panier(SessionInterface $session, PlatRepository $repo): Response
     {
-        
-        $total_panier=0;
+
+        $total_panier = 0;
         $panier = $session->get("panier", []);
 
         $nouveau_panier = [];
         foreach ($panier as $key => $value) {
             $p = $repo->find($key);
             $nouveau_panier[] = $p;
-            $total_panier+=$p->getPrix()*$value;
+            $total_panier += $p->getPrix() * $value;
         }
         return $this->render('panier/panier.html.twig', [
             'panier' => $panier,
@@ -138,30 +136,60 @@ class PanierController extends AbstractController
 
 
     #[Route('/panierlivraison', name: 'app_panierlivraison')]
-    public function confirmlivraison(Request $request, EntityManagerInterface $entityManager, MailService $mailer)
+    public function confirmlivraison(Request $request, EntityManagerInterface $entityManager, MailService $mailer, Session $session)
     {
 
         $form = $this->createForm(LivraisonpanierType::class);
         $form->handleRequest($request);
-
+        //dd($form);
         if ($form->isSubmitted() && $form->isValid()) {
+            //dd('Commande envoyée');
+            $date = date_create_immutable();
             $commande = new Commande();
             $message = new Contact();
+            $details= new Detail();
+            $plats= new Plat();
+            $panier = $session->get("panier");
 
+            foreach($panier as $key => $value){
+                //dd($key, $value);
+                $details->setQuantite($value);
+                $details->setPlat($plats->getId($key));
+                dump($details, $plats->getId());
+            }
+//dd('fin du each');
             $data = $form->getData();
-            dd($data);
+            //dd($data, $data['hiddenDate']);
             $message = $data;
+            $commande->setLivAdresse($data['adresseLiv']);
+            $commande->setLivCp($data['cpLiv']);
+            $commande->setLivVille($data['villeLiv']);
+            $commande->setfactAdresse($data['adresse']);
+            $commande->setfactCp($data['cp']);
+            $commande->setfactVille($data['ville']);
+            $commande->setDateCommande($date);
+            $commande->setLivTelephone($data['telephone']);
+            $commande->setTotal(0);
+            $commande->setEtat(0);
+            $commande->addDetail($panier);
+            dd($commande);
+
+            //dd($message->getObjet(),$message->getEmail(),$message->getMessage());
+            $oo = "Confimation de commande";
+            $ee = $data['email'];
+            $mm = "Vous allez recevoir votre commande à l'adresse suivante:";
+            $mm .= $data['prenom'] . " " . $data['nom'];
+            $mm .= $data['adresse'];
+            $mm .= $data['cpLiv'] . " " . $data['villeLiv'];
+            $mm .= $data['telephone'] . " pour vous joindre";
+            dd($mm);
+
+            //dd($oo,$ee,$mm);
+            $mailer->sendMail($oo, $ee, $mm);
 
             $entityManager->persist($message);
             $entityManager->persist($commande);
             $entityManager->flush();
-
-            //dd($message->getObjet(),$message->getEmail(),$message->getMessage());
-            $oo = strval($message->getObjet());
-            $ee = strval($message->getEmail());
-            $mm = strval($message->getMessage());
-            //dd($oo,$ee,$mm);
-            $mailer->sendMail($oo, $ee, $mm);
 
             return $this->redirectToRoute('app_panier');
         }
@@ -173,9 +201,9 @@ class PanierController extends AbstractController
             // 'total_panier' => $total_panier,
         ]);
     }
-    
- 
-   
+
+
+
 
 
 
@@ -185,16 +213,16 @@ class PanierController extends AbstractController
 
     #[Route('/panierconfirm', name: 'app_panierconfirm')]
     public function confirmcde(
-        SessionInterface $session, 
-        PlatRepository $repo, 
-        Request $request, 
+        SessionInterface $session,
+        PlatRepository $repo,
+        Request $request,
         EntityManagerInterface $entityManager,
-        MailService $mailer)
-    {
+        MailService $mailer
+    ) {
         // $detail = new Detail();
         // $commande = new Commande();
-        $total_panier=0;
-        $panier=$session->get("panier", []);
+        $total_panier = 0;
+        $panier = $session->get("panier", []);
         $nouveau_panier = [];
 
         //Ajouter dans Commande
@@ -210,48 +238,47 @@ class PanierController extends AbstractController
         $entityManager->persist($commande);
 
         //dd($commande);
-        
-        
+
+
         // $entityManager->persist($commande);
         //dd($commande);
-        
-        
+
+
         // $entityManager->flush();
-        
+
         //$idCommande = $commande->getId();
         //dd($idCommande);
-        
+
         // Ajouter des lignes pour Détail
         foreach ($panier as $key => $value) {
-            
+
             $detail = new Detail();
-            
+
             $p = $repo->find($key);
             //dd($p);
             $nouveau_panier[] = $p;
             // dump($key, $value, $idCommande, $p);
             // dd('fin');
-            
+
             $detail->setPlat($p);
             $detail->setCommande($commande);
-            
+
             $detail->setQuantite($value);
-            
+
             $total_panier += $p->getPrix() * $value;
 
             $entityManager->persist($detail);
-            
         }
 
         $commande->setTotal($total_panier);
-        
+
         $entityManager->flush();
-        
-        
+
+
         // dd($total_panier);
         // dd($key, $value, $detail);
-        
-//dd($commande);
+
+        //dd($commande);
         // Envoyer un mail de confirmation de la commande
         $form = $this->createForm(LivraisonpanierType::class);
         $form->handleRequest($request);
@@ -262,20 +289,16 @@ class PanierController extends AbstractController
             $message = $data;
 
             $entityManager->persist($message);
-            
+
             $entityManager->flush();
 
             $oo = strval($message->getObjet());
             $ee = strval($message->getEmail());
             $mm = strval($message->getMessage());
-                //dd($oo,$ee,$mm);
+            //dd($oo,$ee,$mm);
             $mailer->sendMail($oo, $ee, $mm);
         }
 
         $entityManager->flush();
-
     }
-
-
-
 }

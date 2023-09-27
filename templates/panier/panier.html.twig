@@ -7,39 +7,37 @@
 <h1>Votre panier</h1>
 <table class="table table-light table-hover">
     <thead>
-    <tr>
-    <th>Image</th>
-    <th>Libelle</th>
-    <th>Prix</th>
-    <th>Quantité</th>
-    <th>&nbsp;</th>
-    <th>&nbsp;</th>
-    <th>&nbsp;</th>
-    </tr>
+        <tr>
+            <th>Image</th>
+            <th>Libelle</th>
+            <th>Prix</th>
+            <th>Quantité</th>
+            <th><img src="{{ asset('assets/images_the_district/panier_logo_rond_plus.png')}}" height="20" alt="plus"></th>
+            <th><img src="{{ asset('assets/images_the_district/panier_logo_rond_moins.png')}}" height="20" alt="moins"></th>
+            <th><img src="{{ asset('assets/images_the_district/panier_logo_rond_del.png')}}" height="20" alt="del"></th>
+        </tr>
     <tbody>
     {% for i, produit in nouveau_panier %}
-    
-    
     <tr>
-    <td><img src="{{ asset('assets/images_the_district/food/')}}{{ produit.image }}" height="40" alt="{{ produit.libelle }}" class="rounded-3"></td>
-    <td>{{ produit.libelle }}</td>
-    <td>{{ produit.prix }}</td>
-    <td>{{ panier[produit.id] }}</td>
-    {# <a class="nav-link" href="{{ path('app_contact') }}">Contact</a> #}
-    <td>
-        <a href="/panier/ajout/{{produit.id}}"> 
-            <img src="{{ asset('assets/images_the_district/panier_logo_rond_plus.png')}}" height="20" alt="plus">
-        </a>
-    </td>
-    <td>
-        <a href="/panier/retrait/{{produit.id}}"> 
-            <img src="{{ asset('assets/images_the_district/panier_logo_rond_moins.png')}}" height="20" alt="moins"></td>
-        </a>
-    <td>
-        <a href="/panier/delete/{{produit.id}}">
-            <img src="{{ asset('assets/images_the_district/panier_logo_rond_del.png')}}" height="20" alt="del">
-        </a>
-    </td>
+        <td><img src="{{ asset('assets/images_the_district/food/')}}{{ produit.image }}" height="40" alt="{{ produit.libelle }}" title="{{ produit.description }}" class="rounded-3"></td>
+        <td>{{ produit.libelle }}</td>
+        <td>{{ produit.prix }}</td>
+        <td>{{ panier[produit.id] }}</td>
+        <td>
+            <a href="/panier/ajout/{{produit.id}}"> 
+                <img src="{{ asset('assets/images_the_district/panier_logo_rond_plus.png')}}" height="20" alt="plus">
+            </a>
+        </td>
+        <td>
+            <a href="/panier/retrait/{{produit.id}}"> 
+                <img src="{{ asset('assets/images_the_district/panier_logo_rond_moins.png')}}" height="20" alt="moins">
+            </a>
+        </td>
+        <td>
+            <a href="/panier/delete/{{produit.id}}">
+                <img src="{{ asset('assets/images_the_district/panier_logo_rond_del.png')}}" height="20" alt="del">
+            </a>
+        </td>
 </tr>
 
     {% endfor %}
@@ -59,64 +57,26 @@
 
 </tbody>
     </table>
-    <p>Username: {{ app.user.username ?? 'Anonymous user' }}</p>
+    {# <p>Username: {{ app.user.nom ?? 'Anonymous user' }}</p>
+    <p>Firstname: {{ app.user.prenom ?? 'Anonymous user' }}</p>
+    <p>Email: {{ app.user.email ?? 'Anonymous user' }}</p>
+    <p>Adresse: {{ app.user.adresse ?? 'Anonymous user' }}</p>
+    <p>Code Postal: {{ app.user.cp ?? 'Anonymous user' }}</p>
+    <p>Tel: {{ app.user.telephone ?? 'Anonymous user' }}</p> #}
     {# <p>flashes: {{ app.flashes ?? 'No flash' }}</p> #}
     
-{% if app.debug %}
+{# {% if app.debug %}
     <p>Request method: {{ app.request.method }}</p>
     <p>Application Environment: {{ app.environment }}</p>
     <p>Route: {{ app.current_route }}</p>
     <p>Token: {{ app.token }}</p>
-{% endif %}
+{% endif %} #}
     {% if total_panier > 0 %}
         <div class="text-center">
         <a href="{{ path('app_panierlivraison') }}" class="btn btn-success">Où je vous livre ?</a>
         </div>
 
-        {# <div class="row text-center">
-{{ form_start(form) }}
-<div class="my-custom-class-for-errors">
-        {{ form_errors(form) }}
-    
-<div class="col-6 mx-auto input-group-label">
-            {{ form_label(form.nom) }}
-            {{ form_widget(form.nom, {'attr': {'class': 'btn-light btn-lg'} }) }}
-            {{ form_errors(form.nom) }}{{ form_help(form.objet) }}
-        </div>
-        <div class="col-6 mx-auto mb-2">
-            {{ form_label(form.prenom) }}
-            {{ form_widget(form.prenom, {'attr': {'class': 'btn-light btn-lg'} }) }}
-            {{ form_errors(form.prenom) }}
-        </div>
-        <div class="col-6 mx-auto mb-2">
-            {{ form_label(form.email) }}
-            {{ form_widget(form.email, {'attr': {'class': 'btn-light btn-lg'} }) }}
-            {{ form_errors(form.email) }}
-        </div>
-        <div class="col-9 mx-auto mb-2">
-            {{ form_label(form.telephone) }}
-            {{ form_widget(form.telephone, {'attr': {'class': 'btn-outline-district'} }) }}
-            {{ form_errors(form.telephone) }}
-        </div>
-        <div class="col-9 mx-auto mb-2">
-            {{ form_label(form.adresse) }}
-            {{ form_widget(form.adresse, {'attr': {'class': 'btn-outline-district'} }) }}
-            {{ form_errors(form.adresse) }}
-        </div>
-        <div class="col-9 mx-auto mb-2">
-            {{ form_label(form.cp) }}
-            {{ form_widget(form.cp, {'attr': {'class': 'btn-outline-district'} }) }}
-            {{ form_errors(form.cp) }}
-        </div>
-        <div class="col-9 mx-auto mb-2">
-            {{ form_label(form.ville) }}
-            {{ form_widget(form.ville, {'attr': {'class': 'btn-outline-district'} }) }}
-            {{ form_errors(form.ville) }}
-        </div>
-    </div>
-    {{ form_end(form) }}
-</div> #}
-        
+            
     {% endif %}
     
 

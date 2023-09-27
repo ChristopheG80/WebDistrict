@@ -26,18 +26,20 @@
     
 
     
-        <div class="col-6 mx-auto input-group-label">
+        <div class="col-6 mx-auto input-group-label mb-2">
             {{ form_label(form.objet) }}
             {{ form_widget(form.objet, {'attr': {'class': 'btn-light btn-lg'} }) }}
             {{ form_errors(form.objet) }}{{ form_help(form.objet) }}
         </div>
         <div class="col-6 mx-auto mb-2">
             {{ form_label(form.email) }}
-            {{ form_widget(form.email, {'attr': {'class': 'btn-light btn-lg'} }) }}
+            {{ form_widget(form.email, {'attr': {'class': 'btn-light btn-lg', 'value': app.user.email } }) }}
             {{ form_errors(form.email) }}
         </div>
         <div class="col-9 mx-auto mb-2">
             {{ form_label(form.message) }}
+        </div>
+        <div class="col-6 mx-auto input-group-label mb-2">
             {{ form_widget(form.message, {'attr': {'class': 'btn-outline-district'} }) }}
             {{ form_errors(form.message) }}
         </div>
@@ -45,7 +47,6 @@
             {{ form_label(form.save) }}
             {{ form_widget(form.save, {'attr': {'class': 'btn-outline-district rounded-3'} }) }}
         </div>
-    
     </div>
     {{ form_end(form) }}
 </div>

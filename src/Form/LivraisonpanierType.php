@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\User;
 use App\Entity\Utilisateur;
+use DateTimeImmutable;
 use PhpParser\Parser\Multiple;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -18,6 +19,8 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+
 
 
 class LivraisonpanierType extends AbstractType
@@ -34,12 +37,12 @@ class LivraisonpanierType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
 
-        // $Utilisateur = $this->getUser();
-        $Utilisateur = new Utilisateur();
         
+        $Utilisateur = new Utilisateur();
+        // $date = DateTimeImmutable::createFromFormat('Y-m-d', '2023-09-20');
+        $date = date_create_immutable();
+//dd($date);
         $builder
-
-
             ->add('nom', TextType::class, [
                 'attr' => [
                     // 'disabled' => 'disable',
@@ -85,7 +88,7 @@ class LivraisonpanierType extends AbstractType
             ->add('adresse', TextType::class, [
                 'attr' => [
                     'placeholder' => 'Adresse de livraison',
-                    // 'value' => '43 rue de Turenne'
+                    // 'value' => ''
                     'value' => $Utilisateur->getAdresse()
                 ]
             ])
@@ -112,7 +115,6 @@ class LivraisonpanierType extends AbstractType
                     'value' => $Utilisateur->getVille()
                 ]
             ])
-
             ->add('adresseLiv', TextType::class, [
                 'attr' => [
                     'placeholder' => 'Adresse de livraison',
@@ -150,7 +152,9 @@ class LivraisonpanierType extends AbstractType
                     ])
                 ]
             ])
-
+            // ->add('hiddenDate', HiddenType::class, [
+            //     'data' => $date,
+            // ])
             ->add('moyenPaiement', ChoiceType::class, [
                 'choices'  => [
                     'Carte Bleue' => '_BANK_CARD',
@@ -161,10 +165,8 @@ class LivraisonpanierType extends AbstractType
             ->add('cgu', CheckboxType::class, [
                 'value'  => 'CGU',
             ])
-
             ->add('save', SubmitType::class, [
                 'label' => 'Payer la commande',
-
             ]);
     }
 

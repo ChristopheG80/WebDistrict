@@ -8,6 +8,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
+use App\Form\BarreRechercheType;
+
+
 
 class CatalogueController extends AbstractController
 {
@@ -22,16 +26,39 @@ class CatalogueController extends AbstractController
         $this->mailer = $mailer;
     }
 
-    #[Route('/catalogue', name: 'app_catalogue')]
-    public function index(): Response
+
+    #[Route('/', name: 'app_main')]
+    public function main()
     {
+        return $this->redirectToRoute('app_catalogue');
+    }
+
+    #[Route('/catalogue', name: 'app_catalogue')]
+    public function index(Request $request): Response
+    {
+        $form = $this->createForm(BarreRechercheType::class);
+        $form->handleRequest($request);
+        //dd($form);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $platsRec = $this->platRepo->ShowPlatsRec($data['textSearch']);
+            $categRec = $this->categorieRepo->ShowCatRec($data['textSearch']);
+
+            //dd($data);
+            return $this->render('barre_recherche/index.html.twig', [
+                'controller_name' => 'CatalogueController',
+                'categories' => $categRec,
+                'plats' => $platsRec,
+            ]);
+        }
         // $categories = $this->categorieRepo->findAll();
         $categories = $this->categorieRepo->ShowCat6Pop();
         $plats = $this->platRepo->showHomePlats();
         return $this->render('catalogue/index.html.twig', [
             'controller_name' => 'CatalogueController',
             'categories' => $categories,
-            'plats' => $plats
+            'plats' => $plats,
+            'form' => $form
         ]);
     }
 
@@ -48,7 +75,7 @@ class CatalogueController extends AbstractController
     #[Route('/plats/{categorie_id}', name: 'app_catalogue_CatPlats')]
     public function showCatPlats($categorie_id): Response
     {
-        
+
         $plats = $this->categorieRepo->ShowPlatbyCat($categorie_id);
         $cats = $this->categorieRepo->ShowOneCat($categorie_id);
         //dd($plats);
@@ -59,16 +86,31 @@ class CatalogueController extends AbstractController
         ]);
     }
 
-    #[Route('/categories', name: 'app_catalogue_cats')]
-    public function showCats(): Response
+    #[Route('/categories/{page}', name: 'app_catalogue_cats')]
+    public function showCats(int $page = 1): Response
     {
-        // $categories = $this->categorieRepo->ShowCat6Pop();
-        $page=1;
-        $limit=6;
+        $limit = 6;
         $categories = $this->categorieRepo->findCatPaginated($page, $limit);
+        $pages=$this->categorieRepo->countAllCat();
+        //dd($categories);
+        $pages=ceil($pages[0][1]/$limit);
+        //  dd($pages);
         return $this->render('catalogue/showCats.html.twig', [
             'controller_name' => 'CatalogueController',
-            'categories' => $categories
+            'categories' => $categories,
+            'pages' => $pages
+        ]);
+    }
+    #[Route('/barre/recherche', name: 'app_barre_recherche')]
+    public function searchBar(Request $request): Response
+    {
+        $form = $this->createForm(BarreRechercheType::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+        }
+        return $this->render('barre_recherche/index.html.twig', [
+            'controller_name' => 'BarreRechercheController',
+            'form' => $form
         ]);
     }
 }

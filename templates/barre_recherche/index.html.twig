@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Bienvenue chez District{% endblock %}
+{% block title %}Hello BarreRechercheController!{% endblock %}
 
 {% block body %}
 <style>
@@ -8,32 +8,8 @@
     .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
 </style>
 
-
-<div class="container">
-    <div class="row mt-5">
-        {{ form_start(form) }}
-            <div class="my-custom-class-for-errors col-12">
-                {{ form_errors(form) }}
-            </div>
-            <div class="col-3 mb-2" hidden>
-                {{ form_label(form.textSearch) }}
-            </div>
-            <div class="col-12 text-center">
-                <div class="col-3 mb-2">
-                    {{ form_widget(form.textSearch, {'attr': {'class': 'btn-outline-district', 'placeholder': 'Recherche dans les plats et catégories'} }) }}
-                </div>
-                <div class="col-3 mb-2">
-                    {{ form_errors(form.textSearch, {'attr': {'class': 'text-warning'} }) }}
-                </div>
-                <div class="col-3 mb-2">
-                    {{ form_widget(form.save, {'attr': {'class': 'btn-outline-district'} }) }}
-                </div>
-            </div>
-        {{ form_end(form) }}
-    </div>
-</div>
 <div class="example-wrapper">
-    <h1>Les Catégories les plus populaires</h1>
+    <h1>Résultats pour les catégories</h1>
 </div>
     <div class="container">
          <div class="row mt-5">
@@ -47,11 +23,16 @@
                 </div>
                 </div>
             {% endfor %}
+            {% if categories | length == 0 %}
+            <div class="text-center col-12">
+            Pas de correspondance dans les Catégories <a class="btn btn-outline-district" href="{{ path('app_catalogue_cats') }}">Toutes les Catégories</a>
+            </div>
+            {% endif %}
         </div>
     </div>
 
          <div class="example-wrapper col-12">
-         <h1>Les plats au top des ventes</h1>
+         <h1>Résultats pour les plats</h1>
          </div>
     <div class="container">
          <div class="row mt-5">
@@ -62,8 +43,8 @@
                 </div>
                 <div class="col-6 text-center my-2 bg_fond districtColor">
                     {{plat.description}}
-                    <p><a href="/panier/ajout/{{plat.id}}" class="text-center my-1" name="plat">
-                    <img src="{{ asset('assets/images_the_district/panier_logo_ajout.png')}}" title="Ajouter au panier" class="rounded-3">
+                    <p><a href="/panier/ajout/{{plat.id}}" class="text-center my-1" name="plat" >
+                    <img src="{{ asset('assets/images_the_district/panier_logo_ajout.png')}}" class="rounded-3">
                     </a>
                     </p>
                 </div>
@@ -71,7 +52,15 @@
                 <div class="col-2 text-center my-2 bg_fond districtColor justify-content-bottom">
                     {{plat.prix}}&nbsp;&euro;
                 </div>
+            {# </div>     #}
             {% endfor %}
+            {% if plats | length == 0 %}
+            <div class="text-center col-12">
+            Pas de correspondance dans les Plats <a class="btn btn-outline-district" href="{{ path('app_catalogue_plats') }}">Tous les plats</a>
+            </div>
+            {% endif %}
+
         </div>
     </div>
+
 {% endblock %}
