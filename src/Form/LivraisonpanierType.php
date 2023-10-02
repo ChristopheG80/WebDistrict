@@ -152,9 +152,6 @@ class LivraisonpanierType extends AbstractType
                     ])
                 ]
             ])
-            // ->add('hiddenDate', HiddenType::class, [
-            //     'data' => $date,
-            // ])
             ->add('moyenPaiement', ChoiceType::class, [
                 'choices'  => [
                     'Carte Bleue' => '_BANK_CARD',

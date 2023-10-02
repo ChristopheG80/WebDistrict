@@ -7,6 +7,7 @@ use App\Entity\Detail;
 use App\Entity\Commande;
 use App\Entity\Utilisateur;
 use App\Entity\Contact;
+use App\Entity\User;
 use App\Form\LivraisonpanierType;
 use App\Repository\PlatRepository;
 use App\Service\MailService;
@@ -21,6 +22,7 @@ use Symfony\component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 class PanierController extends AbstractController
 {
@@ -32,7 +34,6 @@ class PanierController extends AbstractController
     {
         $this->mailer = $mailer;
     }
-
 
 
     public function index(PlatRepository $repo, Request $request): Response
@@ -52,6 +53,7 @@ class PanierController extends AbstractController
         ]);
     }
 
+
     #[Route('/panier/ajout/{plat}', name: 'app_panier_add')]
     public function addDetails(SessionInterface $session, Plat $plat, Request $request): Response
     {
@@ -66,6 +68,7 @@ class PanierController extends AbstractController
         $session->set("panier", $panier);
         return $this->redirect("$referer");
     }
+
 
     #[Route('/panier/delete/{plat}', name: 'app_panier_delete')]
     public function delplat(SessionInterface $session, PlatRepository $repo, Request $request, Plat $plat): Response
@@ -82,6 +85,7 @@ class PanierController extends AbstractController
         $session->set("panier", $panier);
         return $this->redirect("$referer");
     }
+
 
     #[Route('/panier/retrait/{plat}', name: 'app_panier_retrait')]
     public function retrait(SessionInterface $session, PlatRepository $repo, Request $request, Plat $plat): Response
@@ -103,6 +107,7 @@ class PanierController extends AbstractController
         return $this->redirect("$referer");
     }
 
+
     #[Route('/panier/delpanier', name: 'app_delpanier')]
     public function panierdel(SessionInterface $session, Request $request): Response
     {
@@ -111,10 +116,10 @@ class PanierController extends AbstractController
         return $this->redirect("$referer");
     }
 
+
     #[Route('/panier', name: 'app_panier')]
     public function panier(SessionInterface $session, PlatRepository $repo): Response
     {
-
         $total_panier = 0;
         $panier = $session->get("panier", []);
 
@@ -124,6 +129,7 @@ class PanierController extends AbstractController
             $nouveau_panier[] = $p;
             $total_panier += $p->getPrix() * $value;
         }
+        $session->set("total", $total_panier);
         return $this->render('panier/panier.html.twig', [
             'panier' => $panier,
             'nouveau_panier' => $nouveau_panier,
@@ -136,31 +142,16 @@ class PanierController extends AbstractController
 
 
     #[Route('/panierlivraison', name: 'app_panierlivraison')]
-    public function confirmlivraison(Request $request, EntityManagerInterface $entityManager, MailService $mailer, Session $session)
+    public function confirmlivraison(Request $request, PlatRepository $repo_plat, EntityManagerInterface $entityManager, MailService $message, Session $session, UserInterface $Utilisateur)
     {
-
         $form = $this->createForm(LivraisonpanierType::class);
         $form->handleRequest($request);
-        //dd($form);
-        if ($form->isSubmitted() && $form->isValid()) {
-            //dd('Commande envoyée');
+        if ($form->isSubmitted() && $form->isValid()) {            
             $date = date_create_immutable();
             $commande = new Commande();
-            $message = new Contact();
-            $details= new Detail();
-            $plats= new Plat();
             $panier = $session->get("panier");
-
-            foreach($panier as $key => $value){
-                //dd($key, $value);
-                $details->setQuantite($value);
-                $details->setPlat($plats->getId($key));
-                dump($details, $plats->getId());
-            }
-//dd('fin du each');
             $data = $form->getData();
-            //dd($data, $data['hiddenDate']);
-            $message = $data;
+            
             $commande->setLivAdresse($data['adresseLiv']);
             $commande->setLivCp($data['cpLiv']);
             $commande->setLivVille($data['villeLiv']);
@@ -169,12 +160,21 @@ class PanierController extends AbstractController
             $commande->setfactVille($data['ville']);
             $commande->setDateCommande($date);
             $commande->setLivTelephone($data['telephone']);
-            $commande->setTotal(0);
-            $commande->setEtat(0);
-            $commande->addDetail($panier);
-            dd($commande);
+            $commande->setEtat(Commande::_COMMANDE_ENREGISTREE_PAYEE);
+            $commande->setUtilisateur($Utilisateur);
 
-            //dd($message->getObjet(),$message->getEmail(),$message->getMessage());
+            foreach($panier as $key => $value){
+                $details= new Detail();
+                $plat = $repo_plat->find($key);
+                $details->setQuantite($value);
+                $details->setPlat($plat);
+                $details->setCommande($commande);
+                $commande->addDetail($details);
+                $entityManager->persist($details);                
+            }
+            $total= $session->get("total");
+            $commande->setTotal($total);
+            
             $oo = "Confimation de commande";
             $ee = $data['email'];
             $mm = "Vous allez recevoir votre commande à l'adresse suivante:";
@@ -182,32 +182,23 @@ class PanierController extends AbstractController
             $mm .= $data['adresse'];
             $mm .= $data['cpLiv'] . " " . $data['villeLiv'];
             $mm .= $data['telephone'] . " pour vous joindre";
-            dd($mm);
+            //dd($mm);
 
             //dd($oo,$ee,$mm);
-            $mailer->sendMail($oo, $ee, $mm);
+            $message->sendMail($oo, $ee, $mm);
 
-            $entityManager->persist($message);
+            // $entityManager->persist($message);
             $entityManager->persist($commande);
+            $entityManager->persist($Utilisateur);
             $entityManager->flush();
-
+            $session->set("panier", []);
             return $this->redirectToRoute('app_panier');
         }
         return $this->render('panier/delivery.html.twig', [
             'controller_name' => 'ContactController',
-            'form' => $form,
-            // 'panier' => $panier,
-            // 'nouveau_panier' => $nouveau_panier,
-            // 'total_panier' => $total_panier,
+            'form' => $form,            
         ]);
     }
-
-
-
-
-
-
-
 
 
 
@@ -237,49 +228,21 @@ class PanierController extends AbstractController
         $commande->setEtat(0);
         $entityManager->persist($commande);
 
-        //dd($commande);
-
-
-        // $entityManager->persist($commande);
-        //dd($commande);
-
-
-        // $entityManager->flush();
-
-        //$idCommande = $commande->getId();
-        //dd($idCommande);
-
         // Ajouter des lignes pour Détail
         foreach ($panier as $key => $value) {
-
             $detail = new Detail();
-
             $p = $repo->find($key);
-            //dd($p);
             $nouveau_panier[] = $p;
-            // dump($key, $value, $idCommande, $p);
-            // dd('fin');
-
             $detail->setPlat($p);
             $detail->setCommande($commande);
-
             $detail->setQuantite($value);
-
             $total_panier += $p->getPrix() * $value;
-
             $entityManager->persist($detail);
         }
 
         $commande->setTotal($total_panier);
-
         $entityManager->flush();
 
-
-        // dd($total_panier);
-        // dd($key, $value, $detail);
-
-        //dd($commande);
-        // Envoyer un mail de confirmation de la commande
         $form = $this->createForm(LivraisonpanierType::class);
         $form->handleRequest($request);
 
@@ -298,7 +261,6 @@ class PanierController extends AbstractController
             //dd($oo,$ee,$mm);
             $mailer->sendMail($oo, $ee, $mm);
         }
-
         $entityManager->flush();
     }
 }
