@@ -8,13 +8,12 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
         <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
         
+        {{ encore_entry_link_tags('app') }}
         {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
         {% endblock %}
 
+        {{ encore_entry_script_tags('app') }}
         {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        
         {% endblock %}
     </head>
     <body>
